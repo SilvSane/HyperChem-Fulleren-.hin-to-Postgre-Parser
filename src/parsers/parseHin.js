@@ -57,12 +57,14 @@ const parseFullerenFromPath = async (fpath) => {
       // tokens[5] = '-' sometimes
 
       // find ('**' or 'CA')
-      const markerIndex = tokens.findIndex((t) => t === "**" || t === "CA");
-
-      // skip marker and '-'
-      const dataStart = markerIndex + 2;
+      // skip tokens until the first numeric one: atom N - ELEMENT MARKER - data
+      let dataStart = 4;
+      while (dataStart < tokens.length && !/^[+-]?\d/.test(tokens[dataStart])) {
+        dataStart++;
+      }
 
       const energy = parseFloat(tokens[dataStart]);
+
       const x = parseFloat(tokens[dataStart + 1]);
       const y = parseFloat(tokens[dataStart + 2]);
       const z = parseFloat(tokens[dataStart + 3]);
@@ -88,6 +90,16 @@ const parseFullerenFromPath = async (fpath) => {
         connections: cons,
         conTypes: conTypes,
       });
+
+      if (
+        !Number.isFinite(energy) ||
+        !Number.isFinite(x) ||
+        !Number.isFinite(y) ||
+        !Number.isFinite(z) ||
+        !Number.isFinite(connectionCount)
+      ) {
+        throw new Error(`Parse error at line ${i + 1}: ${line}`);
+      }
     }
     return fullerData;
   } catch (err) {
