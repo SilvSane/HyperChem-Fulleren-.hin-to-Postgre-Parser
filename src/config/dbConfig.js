@@ -5,6 +5,7 @@ const dbConfig = {
     database: process.env.DB_DATABASE || "postgres",
     password: process.env.DB_PASSWORD || "123456",
     port: process.env.DB_PORT || 5432,
+    client_encoding: "UTF8",
   },
 };
 
