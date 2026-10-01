@@ -1,4 +1,5 @@
 import { Client } from "pg";
+import { validateTableName } from "../cli/validators.js";
 import parse from "../parsers/parseHin.js";
 import conf from "../config/dbConfig.js";
 
@@ -11,6 +12,9 @@ const dbConfig = conf.dbC;
  */
 async function insert(filePath, tableName) {
   // table name validation
+  const check = validateTableName(tableName);
+  if (check !== true) throw new Error(`invalid table name: ${check}`);
+
   const safeTableName = tableName.toLowerCase().trim();
 
   // client for every request
@@ -81,7 +85,7 @@ async function insert(filePath, tableName) {
       `[${tableName}] Table created sucessfully, rows added: ${res.rowCount}`,
     );
   } catch (err) {
-    console.error(`[${tableName}] Execute error:`, err.message);
+    throw err;
   } finally {
     await client.end();
   }
