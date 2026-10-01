@@ -10,9 +10,11 @@
   "type": "module",
   "main": "src/main.js",
   "scripts": {
-    "start": "node --env-file=.env src/main.js"
+    "start": "chcp 65001 >nul && node --env-file=.env src/main.js"
   },
   "dependencies": {
+    "inquirer": "^9.3.8",
+    "inquirer-file-selector": "^2.0.0",
     "pg": "^8.21.0"
   }
 }
