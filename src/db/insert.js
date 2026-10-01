@@ -1,6 +1,6 @@
 import { Client } from "pg";
-import parse from "./parse.js";
-import conf from "./dbConfig.js";
+import parse from "../parsers/parseHin.js";
+import conf from "../config/dbConfig.js";
 
 const dbConfig = conf.dbC;
 

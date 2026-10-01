@@ -1,4 +1,4 @@
-import { ParseHin } from "./insert.js";
+import { ParseHin } from "./db/insert.js";
 
 // //paths examples
 // const path30 = "n:/Computer Moduling Physics/fullerens/c30.hin";
