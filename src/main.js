@@ -1,16 +1,33 @@
+import fs from "node:fs";
+import { ensureDatabase, printConnectionHelp } from "./db/ensure.js";
 import { ParseHin } from "./db/insert.js";
+import { askFilePath, askTableName } from "./cli/prompts.js";
 
-// //paths examples
-// const path30 = "n:/Computer Moduling Physics/fullerens/c30.hin";
-// const path70 = "n:/Computer Moduling Physics/fullerens/C70.hin";
-// const path56 = "n:/Computer Moduling Physics/fullerens/c56.hin";
-// const path44 = "n:/Computer Moduling Physics/fullerens/c44.hin";
+console.log("hin -> PostgreSQL");
+console.log("Press Ctrl+C at any time to abort.");
+console.log("");
 
-console.log("File import...");
-// //usage examples
-// await ParseHin(path30, "C30");
-// await ParseHin(path70, "C70");
-// await ParseHin(path56, "C56");
-// await ParseHin(path44, "C44");
+try {
+  await ensureDatabase();
+} catch (err) {
+  printConnectionHelp(err);
+  process.exit(1);
+}
 
-console.log("All successed!");
+const filePath = await askFilePath();
+const stat = fs.statSync(filePath);
+console.log(`Found: ${filePath}`);
+console.log(`Size:  ${stat.size} bytes`);
+console.log("");
+
+while (true) {
+  const tableName = await askTableName();
+  try {
+    await ParseHin(filePath, tableName);
+    break;
+  } catch (err) {
+    console.error(`Failed: ${err.message}`);
+    console.log("Try another table name, or press Ctrl+C to abort.");
+    console.log("");
+  }
+}
